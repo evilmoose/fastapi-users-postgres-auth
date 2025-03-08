@@ -6,8 +6,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 
+from app.schemas.user import UserCreate, UserRead, UserUpdate
 from app.core.config import settings
 from app.core.db import get_db
+
+# Import routers
+from app.api.users import auth_backend, fastapi_users
 
 # Create FastAPI app
 app = FastAPI(
@@ -26,7 +30,32 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 # Include routers
-
+# Include user routes
+app.include_router(
+    fastapi_users.get_auth_router(auth_backend),
+    prefix=f"{settings.API_V1_STR}/auth/jwt",
+    tags=["auth"],
+)
+app.include_router(
+    fastapi_users.get_register_router(UserRead, UserCreate),
+    prefix=f"{settings.API_V1_STR}/auth",
+    tags=["auth"],
+)
+app.include_router(
+    fastapi_users.get_reset_password_router(),
+    prefix=f"{settings.API_V1_STR}/auth",
+    tags=["auth"],
+)
+app.include_router(
+    fastapi_users.get_verify_router(UserRead),
+    prefix=f"{settings.API_V1_STR}/auth",
+    tags=["auth"],
+)
+app.include_router(
+    fastapi_users.get_users_router(UserRead, UserUpdate),
+    prefix=f"{settings.API_V1_STR}/users",
+    tags=["users"],
+)
 
 # Root endpoint
 @app.get("/")

@@ -1,0 +1,14 @@
+/backend/.env
+/backend/.venv
+/backend/__pycache__
+/backend/logs
+/backend/db.sqlite3
+
+# Ignore Python cache
+__pycache__/
+**/__pycache__/
+
+# Ignore compiled Python files
+*.pyc
+*.pyo
+*.pyd

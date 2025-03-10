@@ -11,7 +11,9 @@ from app.core.config import settings
 from app.core.db import get_db
 
 # Import routers
+from app.api.leads import router as leads_router
 from app.api.users import auth_backend, fastapi_users
+
 
 # Create FastAPI app
 app = FastAPI(
@@ -29,7 +31,6 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
-# Include routers
 # Include user routes
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
@@ -55,6 +56,13 @@ app.include_router(
     fastapi_users.get_users_router(UserRead, UserUpdate),
     prefix=f"{settings.API_V1_STR}/users",
     tags=["users"],
+)
+
+# Include lead routes
+app.include_router(
+    leads_router,
+    prefix=f"{settings.API_V1_STR}/leads",
+    tags=["leads"],
 )
 
 # Root endpoint
